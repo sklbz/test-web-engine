@@ -47,9 +47,7 @@ async function fetchWebsite(website) {
 			return { body, style, script };
 		})
 		.then(({ body, style, script }) => {
-			const iframe = document.createElement('iframe');
-			iframe.srcdoc = `<html><head><style>${style}</style></head><body>${replaceLinks(body)}</body></html>`;
-			document.body.appendChild(iframe);
+			document.body.innerHtml = body;
 		})
 		.catch(error => {
 			console.error('There was a problem with the fetch operation:', error);
