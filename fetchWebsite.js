@@ -47,6 +47,9 @@ async function fetchWebsite(website) {
 			return { body, style, script };
 		})
 		.then(({ body, style, script }) => {
+			console.log(body);
+			console.log(style);
+			console.log(script);
 			document.body.innerHtml = body;
 		})
 		.catch(error => {
