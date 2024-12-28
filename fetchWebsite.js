@@ -56,14 +56,14 @@ async function fetchWebsite(website) {
 			const script = getScript(html);
 			const head = getHead(html);
 
-			const formattedHead = head ? replaceLinks(head, baseUrl(website)) : '';
-			const formattedBody = body ? replaceLinks(body, baseUrl(website)) : '';
-
-			return { formattedBody, style, script, formattedHead };
+			return { body, style, script, head };
 		})
 		.then(({ body, style, script, head }) => {
-			document.body.innerHTML = body;
-			document.head.innerHTML = `${head} ${defaultHead}`;
+			const fmtHead = replaceLinks(head, baseUrl(website));
+			const fmtBody = replaceLinks(body, baseUrl(website));
+
+			document.body.innerHTML = fmtBody;
+			document.head.innerHTML = fmtHead;
 
 			return { style, script };
 		})
