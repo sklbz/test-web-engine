@@ -3,7 +3,7 @@
 		event.preventDefault();
 
 		const targetUrl = event.target.href;
-		console.log(`Navigation prevented. Target URL: ${targetUrl}`);
+		fetchWebsite(`${proxyUrl}${targetUrl}`);
 	}
 
 	function interceptLinks() {

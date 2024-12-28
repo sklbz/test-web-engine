@@ -27,7 +27,6 @@ function getScript(html) {
 async function fetchWebsite(website) {
 	fetch(
 		website, {
-		mode: 'no-cors',
 		headers: {
 			'Access-Control-Allow-Origin': '*'
 		}
@@ -51,9 +50,9 @@ async function fetchWebsite(website) {
 			console.log(body);
 			console.log(style);
 			console.log(script);
-			document.body.innerHtml = body;
+			document.body.innerText = body;
 		})
 		.catch(error => {
-			console.error('There was a problem with the fetch operation:', error);
+			console.error(error);
 		});
 }
