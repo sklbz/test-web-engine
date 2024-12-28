@@ -3,7 +3,7 @@
 		event.preventDefault();
 
 		const targetUrl = event.target.href;
-		fetchWebsite(`${proxyUrl}${targetUrl}`);
+		fetchWebsite(targetUrl);
 	}
 
 	function interceptLinks() {

@@ -1,29 +1,16 @@
-const prefix = "https://google.com";
-
-function btn(onclick, content) {
-	return `<button onclick="${onclick}">${content}</button>`;
-}
-
-function navBtn(link, content) {
-	return btn(`fetchWebsite('${link}')`, content)
-}
-
-function replaceLinks(html) {
+function replaceLinks(html, url) {
 	function modifyLink(link) {
 		if (link.startsWith("/")) {
-			return `${prefix}${link}`;
+			return `${url}${link}`;
 		}
 		return link;
 	}
 
-	const linkRegex = /<a href="([^"]+)">([^<]*)<\/a>/g;
+	const linkRegex = /(\b(?:href|src)="([^"]+)")/g;
 
-	const result = html.replace(linkRegex, (_, href, text) => {
-		console.log(href);
-		const modifiedLink = modifyLink(href);
-		console.log(modifiedLink);
-		return navBtn(modifiedLink, text);
+	return html.replace(linkRegex, (_, fullAttribute, attributeValue) => {
+		const newValue = modifyLink(attributeValue);
+		const replacement = fullAttribute.replace(attributeValue, newValue);
+		return replacement;
 	});
-
-	return result;
 }

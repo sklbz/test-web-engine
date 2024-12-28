@@ -24,9 +24,13 @@ function getScript(html) {
 	return match ? match[1] : null;
 }
 
+function handleCORS(website) {
+	return `${proxyUrl}${website}`;
+}
+
 async function fetchWebsite(website) {
 	fetch(
-		website, {
+		handleCORS(website), {
 		headers: {
 			'Access-Control-Allow-Origin': '*'
 		}
@@ -47,7 +51,7 @@ async function fetchWebsite(website) {
 			return { body, style, script };
 		})
 		.then(({ body, style, script }) => {
-			document.body.innerHTML = body;
+			document.body.innerHTML = replaceLinks(body, baseUrl(website));
 			const styleElement = document.createElement('style');
 			styleElement.innerText = style;
 			document.head.appendChild(styleElement);
