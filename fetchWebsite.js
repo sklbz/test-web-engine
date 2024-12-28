@@ -12,6 +12,13 @@ function getBody(html) {
 	return match ? match[1] : null;
 }
 
+function getHead(html) {
+	const headRegex = /<head[^>]*>([\s\S]*?)<\/head>/i;
+	const match = html.match(headRegex);
+	return match ? match[1] : null;
+}
+
+
 function getStyle(html) {
 	const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/i;
 	const match = html.match(styleRegex);
@@ -47,11 +54,20 @@ async function fetchWebsite(website) {
 			const body = getBody(html);
 			const style = getStyle(html);
 			const script = getScript(html);
+			const head = getHead(html);
 
-			return { body, style, script };
+			const formattedHead = head ? replaceLinks(head, baseUrl(website)) : '';
+			const formattedBody = body ? replaceLinks(body, baseUrl(website)) : '';
+
+			return { formattedBody, style, script, formattedHead };
 		})
-		.then(({ body, style, script }) => {
-			document.body.innerHTML = replaceLinks(body, baseUrl(website));
+		.then(({ body, style, script, head }) => {
+			document.body.innerHTML = body;
+			document.head.innerHTML = `${head} ${defaultHead}`;
+
+			return { style, script };
+		})
+		.then(({ style, script }) => {
 			const styleElement = document.createElement('style');
 			styleElement.innerText = style;
 			document.head.appendChild(styleElement);

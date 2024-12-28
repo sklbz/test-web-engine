@@ -6,6 +6,8 @@ function replaceLinks(html, url) {
 		return link;
 	}
 
+	console.log(url);
+
 	const linkRegex = /(\b(?:href|src)="([^"]+)")/g;
 
 	return html.replace(linkRegex, (_, fullAttribute, attributeValue) => {
