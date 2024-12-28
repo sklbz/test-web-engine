@@ -27,7 +27,7 @@ function getScript(html) {
 async function fetchWebsite(website) {
 	fetch(
 		website, {
-		mode: 'cors',
+		mode: 'no-cors',
 		headers: {
 			'Access-Control-Allow-Origin': '*'
 		}
