@@ -47,10 +47,13 @@ async function fetchWebsite(website) {
 			return { body, style, script };
 		})
 		.then(({ body, style, script }) => {
-			console.log(body);
-			console.log(style);
-			console.log(script);
-			document.body.innerText = body;
+			document.body.innerHTML = body;
+			const styleElement = document.createElement('style');
+			styleElement.innerText = style;
+			document.head.appendChild(styleElement);
+			const scriptElement = document.createElement('script');
+			scriptElement.innerText = script;
+			document.body.appendChild(scriptElement);
 		})
 		.catch(error => {
 			console.error(error);
