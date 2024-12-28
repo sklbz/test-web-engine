@@ -29,3 +29,15 @@ function getScripts(html) {
 		inline: match[2] || null,
 	}));
 }
+
+function modifyLink(link, base) {
+	console.log(typeof link)
+	if (link.starstsWith("http")) {
+		return link;
+	}
+	if (link.startsWith("/")) {
+		return `${base}${link}`;
+	}
+	return `${base}/${link}`;
+}
+

@@ -6,15 +6,6 @@ function handleCORS(website) {
 	return `${proxyUrl}${website}`;
 }
 
-/*function replaceLinks(content, base) {
-	return content.replace(/(href|src)="([^"]+)"/g, (match, attr, url) => {
-		if (url.startsWith("http")) {
-			return match;
-		}
-		return `${attr}="${base}${url.startsWith("/") ? "" : "/"}${url}"`;
-	});
-}*/
-
 function fetchWebsite(website) {
 
 	fetch(handleCORS(website), {
@@ -24,13 +15,15 @@ function fetchWebsite(website) {
 	})
 		.then(response => {
 			if (!response.ok) {
-				throw new Error(`Network response was not ok: ${response.status}`);
+				throw new Error(response.status);
 			}
 
-
-			const html = response.text();
-			const fmtHtml = replaceLinks(html, baseUrl(website));
-			return fmtHtml;
+			return response.text();
+		})
+		.then(response => {
+			const base = baseUrl(website);
+			const html = replaceLinks(response, base);
+			return html;
 		})
 		.then(html => {
 			const head = getHead(html);
@@ -54,11 +47,15 @@ function fetchWebsite(website) {
 				document.head.appendChild(styleElement);
 			});
 
+			return scripts;
+		})
+		.then(scripts => {
+
 			scripts.forEach(({ src, inline }) => {
 				const scriptElement = document.createElement("script");
 				if (src) {
 					scriptElement.src = src;
-					scriptElement.async = true; // Fetch and execute asynchronously
+					scriptElement.async = true;
 				} else if (inline) {
 					scriptElement.textContent = inline;
 				}
