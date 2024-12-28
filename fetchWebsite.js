@@ -2,10 +2,6 @@ const testWebsite = "https://example.com";
 const proxyUrl = "https://cors-anywhere.herokuapp.com/";
 const browserURL = "https://www.google.com";
 
-/*
- * https://cors-anywhere.herokuapp.com/corsdemo?accessRequest=1c3117a6bb2ead1ede3b2cce82f68247195ad4ca2679a50548e2d92a057066e4
- * */
-
 function getBody(html) {
 	const bodyRegex = /<body[^>]*>([\s\S]*?)<\/body>/i;
 	const match = html.match(bodyRegex);
@@ -18,64 +14,96 @@ function getHead(html) {
 	return match ? match[1] : null;
 }
 
-
-function getStyle(html) {
-	const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/i;
-	const match = html.match(styleRegex);
-	return match ? match[1] : null;
+function getStyles(html) {
+	const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+	const matches = [...html.matchAll(styleRegex)];
+	return matches.map(match => match[1]);
 }
 
-function getScript(html) {
-	const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/i;
-	const match = html.match(scriptRegex);
-	return match ? match[1] : null;
+function getScripts(html) {
+	const scriptRegex = /<script[^>]*src="([^"]+)"[^>]*>|<script[^>]*>([\s\S]*?)<\/script>/gi;
+	const matches = [...html.matchAll(scriptRegex)];
+	return matches.map(match => ({
+		src: match[1] || null,
+		inline: match[2] || null,
+	}));
 }
 
 function handleCORS(website) {
 	return `${proxyUrl}${website}`;
 }
 
-async function fetchWebsite(website) {
-	fetch(
-		handleCORS(website), {
-		headers: {
-			'Access-Control-Allow-Origin': '*'
+function baseUrl(website) {
+	try {
+		const url = new URL(website);
+		return url.origin;
+	} catch (e) {
+		console.error("Invalid URL:", website);
+		return "";
+	}
+}
+
+function replaceLinks(content, base) {
+	return content.replace(/(href|src)="([^"]+)"/g, (match, attr, url) => {
+		if (url.startsWith("http")) {
+			return match;
 		}
+		return `${attr}="${base}${url.startsWith("/") ? "" : "/"}${url}"`;
+	});
+}
+
+function fetchWebsite(website) {
+
+	fetch(handleCORS(website), {
+		headers: {
+			"Access-Control-Allow-Origin": "*",
+		},
 	})
 		.then(response => {
 			if (!response.ok) {
-				console.log(response);
-				throw new Error('Network response was not ok');
+				throw new Error(`Network response was not ok: ${response.status}`);
 			}
 
-			return response.text();
+
+			const html = response.text();
+			const fmtHtml = replaceLinks(html, baseUrl(website));
+			return fmtHtml;
 		})
 		.then(html => {
-			const body = getBody(html);
-			const style = getStyle(html);
-			const script = getScript(html);
 			const head = getHead(html);
+			const body = getBody(html);
+			const styles = getStyles(html);
+			const scripts = getScripts(html);
 
-			return { body, style, script, head };
+			return { head, body, styles, scripts };
 		})
-		.then(({ body, style, script, head }) => {
-			const fmtHead = replaceLinks(head, baseUrl(website));
-			const fmtBody = replaceLinks(body, baseUrl(website));
+		.then(({ head, body, styles, scripts }) => {
+			document.body.innerHTML = body;
+			document.head.innerHTML = head;
 
-			document.body.innerHTML = fmtBody;
-			document.head.innerHTML = fmtHead;
-
-			return { style, script };
+			return { styles, scripts };
 		})
-		.then(({ style, script }) => {
-			const styleElement = document.createElement('style');
-			styleElement.innerText = style;
-			document.head.appendChild(styleElement);
-			const scriptElement = document.createElement('script');
-			scriptElement.innerText = script;
-			document.body.appendChild(scriptElement);
+		.then(({ styles, scripts }) => {
+
+			styles.forEach(styleContent => {
+				const styleElement = document.createElement("style");
+				styleElement.innerText = styleContent;
+				document.head.appendChild(styleElement);
+			});
+
+			scripts.forEach(({ src, inline }) => {
+				const scriptElement = document.createElement("script");
+				if (src) {
+					scriptElement.src = src;
+					scriptElement.async = true; // Fetch and execute asynchronously
+				} else if (inline) {
+					scriptElement.textContent = inline;
+				}
+				document.body.appendChild(scriptElement);
+			});
+
 		})
 		.catch(error => {
-			console.error(error);
-		});
+			console.log(error);
+		})
 }
