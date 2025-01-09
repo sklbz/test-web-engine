@@ -1,17 +1,26 @@
 const testWebsite = "https://example.com";
-const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+//const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+const proxyUrl = "https://localhost:8080/proxy?target=";
 const browserURL = "https://www.google.com";
 
-function handleCORS(website) {
+function handleProxy(website) {
 	return `${proxyUrl}${website}`;
+}
+
+function headers() {
+	return {
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+		"Access-Control-Allow-Headers": "Content-Type, Authorization",
+	};
 }
 
 function fetchWebsite(website) {
 
-	fetch(handleCORS(website), {
-		headers: {
-			"Access-Control-Allow-Origin": "*",
-		},
+	const base = baseUrl(website);
+
+	fetch(handleProxy(website), {
+		headers: headers(),
 	})
 		.then(response => {
 			if (!response.ok) {
@@ -21,7 +30,6 @@ function fetchWebsite(website) {
 			return response.text();
 		})
 		.then(response => {
-			const base = baseUrl(website);
 			const html = replaceLinks(response, base);
 			return html;
 		})

@@ -30,14 +30,14 @@ function getScripts(html) {
 	}));
 }
 
+/**
+ * @param {string} link 
+ * @param {string} base 
+ */
 function modifyLink(link, base) {
-	console.log(typeof link)
-	if (link.starstsWith("http")) {
+	if (link.startsWith("http")) {
 		return link;
 	}
-	if (link.startsWith("/")) {
-		return `${base}${link}`;
-	}
-	return `${base}/${link}`;
+	return `${base}${link}`;
 }
 
