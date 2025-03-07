@@ -1,9 +1,10 @@
 const testWebsite = "https://example.com";
 //const proxyUrl = "https://cors-anywhere.herokuapp.com/";
-const proxyUrl = "https://localhost:8080/proxy?target=";
+//const proxyUrl = "https://localhost:8080/proxy?target=";
 const browserURL = "https://www.google.com";
 
 function handleProxy(website) {
+	const proxyUrl = localStorage.getItem("proxyUrl");
 	return `${proxyUrl}${website}`;
 }
 
