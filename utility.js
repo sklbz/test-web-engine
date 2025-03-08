@@ -34,7 +34,7 @@ function getScripts(html) {
  * @param {string} link 
  * @param {string} base 
  */
-function modifyLink(link, base) {
+function editLink(link, base) {
 	const proxy = localStorage.getItem("proxyUrl") || corsAnywhere;
 	if (link.startsWith(proxy)) {
 		return link;
@@ -43,5 +43,16 @@ function modifyLink(link, base) {
 		return `${proxy}${link}`;
 	}
 	return `${proxy}${base}${link}`;
+}
+
+/**
+ * @param {string} link 
+ * @param {string} base 
+ */
+function modifyLink(link, base) {
+	if (link.startsWith("http")) {
+		return `${link}`;
+	}
+	return `${base}${link}`;
 }
 

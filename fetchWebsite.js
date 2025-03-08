@@ -111,7 +111,7 @@ function getWebsite({ website, data }) {
 				scriptElement.src = src;
 				scriptElement.async = true;
 			} else if (inline) {
-				scriptElement.textContent = inline;
+				scriptElement.textContent = replaceScriptLinks(inline);
 			}
 			document.body.appendChild(scriptElement);
 		});
