@@ -77,45 +77,48 @@ function fetchWebsite(website) {
 		})
 }
 
+function updateUI(response, base) {
+	try {
+		if (!response.ok) {
+			throw new Error(response.status);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+
+	const html = replaceLinks(response, base);
+	const head = getHead(html);
+	const body = getBody(html);
+	const styles = getStyles(html);
+	const scripts = getScripts(html);
+
+	document.body.innerHTML = body;
+	document.head.innerHTML = head;
+
+	styles.forEach(styleContent => {
+		const styleElement = document.createElement("style");
+		styleElement.innerText = styleContent;
+		document.head.appendChild(styleElement);
+	});
+
+	scripts.forEach(({ src, inline }) => {
+		const scriptElement = document.createElement("script");
+		if (src) {
+			scriptElement.src = src;
+			scriptElement.async = true;
+		} else if (inline) {
+			scriptElement.textContent = replaceScriptLinks(inline);
+		}
+		document.body.appendChild(scriptElement);
+	});
+
+}
+
 function getWebsite({ website, data }) {
 	const base = baseUrl(website);
 
-
-	function updateUI(response) {
-		try {
-			if (!response.ok) {
-				throw new Error(response.status);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-
-		const html = replaceLinks(response, base);
-		const head = getHead(html);
-		const body = getBody(html);
-		const styles = getStyles(html);
-		const scripts = getScripts(html);
-
-		document.body.innerHTML = body;
-		document.head.innerHTML = head;
-
-		styles.forEach(styleContent => {
-			const styleElement = document.createElement("style");
-			styleElement.innerText = styleContent;
-			document.head.appendChild(styleElement);
-		});
-
-		scripts.forEach(({ src, inline }) => {
-			const scriptElement = document.createElement("script");
-			if (src) {
-				scriptElement.src = src;
-				scriptElement.async = true;
-			} else if (inline) {
-				scriptElement.textContent = replaceScriptLinks(inline);
-			}
-			document.body.appendChild(scriptElement);
-		});
-	}
-
-	doGetRequest({ url: website, data: data }, updateUI);
+	doGetRequest(
+		{ url: website, data: data },
+		(response) => updateUI(response, base)
+	);
 }
