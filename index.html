@@ -14,5 +14,12 @@
 <body>
 		<a href="https://example.com">click me!</a>
 		<button onclick="localStorage.setItem('proxyUrl', corsAnywhere); setupProxy();"> setup proxy </button> 
+		<fieldset>
+			<legend>Search</legend>
+			<input class="url-input" type="text"></input>
+			<button 
+				onclick="getWebsite({ website: `https://${document.querySelector('.url-input').value}` });"
+				type="submit">⌕</button>
+		</fieldset>
 </body>
 </html>
