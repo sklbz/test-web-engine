@@ -1,0 +1,8 @@
+.search-fieldset {
+	display: flex;
+	justify-self: center;
+	align-self: center;
+	flex-direction: row;
+	width: 15%;
+	margin: 5%;
+}

@@ -15,13 +15,24 @@
 <body>
 		<a href="https://example.com">click me!</a>
 		<a href="https://mathraining.be/sections/2/problems">click me also!</a>
-		<button onclick="localStorage.setItem('proxyUrl', corsAnywhere); setupProxy();"> setup proxy </button> 
-		<fieldset>
+		<!-- <button onclick="localStorage.setItem('proxyUrl', corsAnywhere); setupProxy();"> setup proxy </button>  -->
+		<button onclick="localStorage.setItem('proxyUrl', 'http://localhost:8888/proxy?target=');"></button>
+
+		<fieldset class="search-fieldset">
+			<legend>Search</legend>
+			<input class="url-input-search" type="text"></input>
+			<button 
+				onclick="fetchWebsite({ website: `https://${document.querySelector('.url-input-search').value}` });"
+				type="submit">⌕</button>
+		</fieldset>
+
+		<!-- <fieldset>
 			<legend>Search</legend>
 			<input class="url-input" type="text"></input>
 			<button 
 				onclick="getWebsite({ website: `https://${document.querySelector('.url-input').value}` });"
 				type="submit">⌕</button>
-		</fieldset>
+		</fieldset> -->
+
 </body>
 </html>
