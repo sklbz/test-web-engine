@@ -20,7 +20,7 @@ document.addEventListener('submit', function(e) {
 	const url = form.action
 		.replace('http', 'https')
 		.replace('httpss', 'https');
-	;
+
 	const method = form.method;
 	const formData = new FormData(form);
 

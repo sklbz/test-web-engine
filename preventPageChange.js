@@ -9,6 +9,7 @@
 	function interceptLinks() {
 		const links = document.querySelectorAll('a[href]');
 		links.forEach(link => {
+			link.removeEventListener('click', handleLinkClick);
 			link.addEventListener('click', handleLinkClick);
 		});
 	}
