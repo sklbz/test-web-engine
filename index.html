@@ -16,13 +16,13 @@
 		<a href="https://example.com">click me!</a>
 		<a href="https://mathraining.be/sections/2/problems">click me also!</a>
 		<!-- <button onclick="localStorage.setItem('proxyUrl', corsAnywhere); setupProxy();"> setup proxy </button>  -->
-		<button onclick="localStorage.setItem('proxyUrl', 'http://localhost:8888/proxy?target=');"></button>
+		<button onclick="localStorage.setItem('proxyUrl', 'http://localhost:3000/proxy?target=');"></button>
 
 		<fieldset class="search-fieldset">
 			<legend>Search</legend>
 			<input class="url-input-search" type="text"></input>
 			<button 
-				onclick="fetchWebsite({ website: `https://${document.querySelector('.url-input-search').value}` });"
+				onclick="fetchWebsite(`https://${document.querySelector('.url-input-search').value}`);"
 				type="submit">⌕</button>
 		</fieldset>
 
